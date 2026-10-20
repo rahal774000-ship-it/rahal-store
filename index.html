@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>متجر رحال - المخزن</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-body{background:#f2f6ee;direction:rtl;padding-bottom:80px}
+body{background:#f2f6ee;direction:rtl;padding-bottom:90px}
 .header{background:#0f3d24;color:white;padding:14px 12px;display:flex;justify-content:space-between;align-items:center}
 .header h1{font-size:15px}
-.header small{font-size:11px;opacity:0.8}
 .badge{background:rgba(255,255,255,0.15);padding:6px 10px;border-radius:20px;font-size:11px}
 .top{background:white;margin:10px;border-radius:14px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-.stats{display:flex;gap:8px;font-size:12px;color:#6b7683;margin-bottom:10px}
+.stats{display:flex;gap:10px;font-size:12px;color:#6b7683;margin-bottom:10px;flex-wrap:wrap}
 .stats b{color:#0f3d24}
 .search-row{display:flex;gap:8px}
 .search-row input{flex:1;padding:12px 14px;border:1.5px solid #dfe3de;border-radius:24px;text-align:right;outline:none}
@@ -23,33 +43,143 @@ body{background:#f2f6ee;direction:rtl;padding-bottom:80px}
 .list{padding:0 10px;display:flex;flex-direction:column;gap:10px}
 .row{background:white;border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.04);border:1px solid #eef2eb}
 .right{flex:1}
-.right .name{font-weight:bold;font-size:13px;color:#12181f;cursor:pointer}
+.right .name{font-weight:bold;font-size:13px;color:#12181f}
 .right .code{font-size:11px;color:#6b7683;margin-top:2px}
 .right .price{font-size:13px;color:#12181f;margin-top:4px;font-weight:bold}
 .middle{display:flex;align-items:center;gap:8px;background:#f2f6ee;border-radius:20px;padding:4px 8px}
-.middle button{width:26px;height:26px;border-radius:50%;border:1px solid #dfe3de;background:white;cursor:pointer;font-weight:bold}
+.middle button{width:28px;height:28px;border-radius:50%;border:1px solid #dfe3de;background:white;cursor:pointer;font-weight:bold}
 .qty{font-weight:bold;min-width:20px;text-align:center;font-size:13px}
 .left{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .left button{padding:6px 12px;border-radius:18px;border:none;font-size:11px;cursor:pointer;font-weight:bold}
 .btn-edit{background:#eef1f3;color:#12181f}
 .btn-del{background:#ffe4ec;color:#b3261e}
-.login-bar{background:white;margin:10px;border-radius:12px;padding:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;border:2px dashed #0f3d24}
+.login-bar{background:white;margin:10px;border-radius:12px;padding:12px;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;border:2px dashed #0f3d24}
+.btn-mgr{background:#0f3d24;color:white;padding:12px 20px;border-radius:24px;border:none;font-weight:bold;cursor:pointer;font-size:13px}
+.btn-out{background:#eee;padding:10px 16px;border-radius:20px;border:none;cursor:pointer}
+.badge-mgr{background:#0f3d24;color:white;padding:6px 12px;border-radius:14px;font-size:12px;display:none}
 .footer{background:#12181f;color:#aaa;padding:12px;text-align:center;font-size:10px;margin-top:16px;border-radius:12px 12px 0 0}
 .cart{position:fixed;bottom:12px;left:12px;background:#0f3d24;color:white;padding:12px 18px;border-radius:30px;cursor:pointer;z-index:20;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99;align-items:center;justify-content:center;padding:12px}
 .modal.show{display:flex}
-.modal-content{background:white;width:100%;max-width:380px;border-radius:16px;padding:16px}
+.modal-content{background:white;width:100%;max-width:380px;border-radius:16px;padding:18px;text-align:center}
+.modal-content input{width:100%;padding:14px;border:2px solid #0f3d24;border-radius:12px;text-align:center;font-size:18px;letter-spacing:3px;margin:12px 0;outline:none}
+.modal-content .btn{width:100%;padding:12px;border:none;border-radius:12px;font-weight:bold;cursor:pointer;margin-top:8px}
+.btn-ok{background:#0f3d24;color:white}
+.btn-cancel{background:#eee}
 </style>
 </head>
 <body>
 <div class="header">
 <div><h1>📦 المخزن - تعديل الأسعار والكميات</h1><small>متجر رحال لقطع الغيار - سرت | 0946514337</small></div>
-<div class="badge" id="stats">0 ناقص، 0 قيمة، 0 أصناف</div>
+<div class="badge" id="statsTop">0 ناقص، 0 قيمة، 0 أصناف</div>
 </div>
+
 <div class="login-bar">
-<button onclick="adminLogin()" style="background:#0f3d24;color:white;padding:10px 18px;border-radius:20px;border:none;font-weight:bold;cursor:pointer">🔐 دخول المدير - رحال - اضغط هنا</button>
-<button onclick="logout()" style="background:#eee;padding:10px 14px;border-radius:20px;border:none">خروج</button>
-<span id="role" style="display:none;background:#0f3d24;color:white;padding:6px 10px;border-radius:14px;font-size:11px"></span>
+<button class="btn-mgr" onclick="openLogin()">🔐 دخول المدير - رحال - اضغط هنا</button>
+<button class="btn-out" onclick="logout()">خروج</button>
+<span id="role" class="badge-mgr">👑 مدير - رحال</span>
+<button onclick="resetData()" style="background:#ffe4ec;color:#b3261e;padding:8px 10px;border-radius:12px;border:none;font-size:10px">🔄 تصفير</button>
 </div>
+
 <div class="top">
-<div class="stats" id="stats2"><span>💰 <b id="totalVal">0</b> قيمة</span> <span>📦 <b id="totalItems">0</b> أصناف</span> <span>⚠️ <b id="low">0</b> ناقص
+<div class="stats"><span>💰 <b id="totalVal">0</b> قيمة</span> <span>📦 <b id="totalItems">0</b> أصناف</span> <span>⚠️ <b id="low">0</b> ناقص</span></div>
+<div class="search-row"><input id="q" placeholder="ابحث في المخزن... 🔍" oninput="render()"><button class="btn-add" onclick="addNew()">+ صنف</button></div>
+</div>
+
+<div class="cats" id="cats"></div>
+<div class="list" id="list"></div>
+
+<div class="cart" onclick="openCart()">🛒 <span id="cnt">0</span> السلة - <span id="cartTotal">0</span> د.ل</div>
+
+<div id="loginM" class="modal"><div class="modal-content">
+<h3>🔐 دخول المدير</h3>
+<p style="font-size:12px;color:#666;margin-top:6px">متجر رحال لقطع الغيار</p>
+<input id="passInput" type="tel" placeholder="0946514337" inputmode="numeric">
+<button class="btn btn-ok" onclick="checkPass()">دخول ✅</button>
+<button class="btn btn-cancel" onclick="closeM('loginM')">إلغاء</button>
+<p id="loginMsg" style="font-size:11px;color:#b3261e;margin-top:8px"></p>
+</div></div>
+
+<div id="cartM" class="modal"><div class="modal-content">
+<h3>🛒 السلة</h3><div id="cartItems" style="margin:10px 0;text-align:right"></div>
+<div id="tot" style="font-weight:bold;color:#0f3d24;margin:8px 0"></div>
+<button style="width:100%;padding:12px;background:#25D366;color:white;border:none;border-radius:20px;font-weight:bold" onclick="wa()">📱 اطلب واتساب</button>
+<button style="width:100%;margin-top:8px;padding:10px;background:#eee;border:none;border-radius:20px" onclick="closeM('cartM')">إغلاق</button>
+</div></div>
+
+<div class="footer">متجر رحال لقطع الغيار - سرت - 0946514337<br>اضغط تصفير لو المنتجات ما ظهرتش - ثم حدث الصفحة</div>
+
+<script>
+const raw=[
+{id:1,name:"فلتر زيت",oem:"YZZD1-90915",brand:"تويوتا",price:35,qty:20,cat:"فلاتر"},
+{id:2,name:"فلتر هواء",oem:"17801-0T030",brand:"هونداي",price:35,qty:12,cat:"فلاتر"},
+{id:3,name:"فلتر بنزين",oem:"31010-1R100",brand:"كيا",price:30,qty:8,cat:"فلاتر"},
+{id:4,name:"فلتر مكيف",oem:"97133-2E200",brand:"نيسان",price:30,qty:15,cat:"فلاتر"},
+{id:5,name:"تيل فرامل أمامي",oem:"04465-02240",brand:"تويوتا",price:110,qty:6,cat:"فرامل"},
+{id:6,name:"تيل فرامل خلفي",oem:"58302-1RA30",brand:"هونداي",price:90,qty:4,cat:"فرامل"},
+{id:7,name:"دسك فرامل (زوج)",oem:"51712-1J000",brand:"كيا",price:220,qty:2,cat:"فرامل"},
+{id:8,name:"زيت محرك 5W-30",oem:"08880-81252",brand:"تويوتا",price:95,qty:18,cat:"زيوت وسوائل"},
+{id:9,name:"زيت محرك 10W-40",oem:"G-10W40",brand:"عام",price:80,qty:22,cat:"زيوت وسوائل"},
+{id:10,name:"زيت فرامل DOT4",oem:"DOT4-500",brand:"عام",price:20,qty:30,cat:"زيوت وسوائل"},
+{id:11,name:"مياه رادياتير",oem:"COOL-4L",brand:"عام",price:25,qty:16,cat:"زيوت وسوائل"},
+{id:12,name:"بطارية 70 أمبير",oem:"BAT-70A",brand:"عام",price:320,qty:3,cat:"كهرباء وبطاريات"},
+{id:13,name:"بوجيهات (طقم 4)",oem:"90919-01253",brand:"تويوتا",price:85,qty:10,cat:"كهرباء وبطاريات"},
+{id:14,name:"دينمو شحن",oem:"27060-0T090",brand:"نيسان",price:450,qty:1,cat:"كهرباء وبطاريات"},
+{id:15,name:"مساعد أمامي",oem:"54651-1J000",brand:"هونداي",price:180,qty:4,cat:"تعليق وهيكل"},
+{id:16,name:"جلدة (مقص)",oem:"54584-1R000",brand:"كيا",price:130,qty:7,cat:"تعليق وهيكل"},
+{id:17,name:"سير مروحة",oem:"90916-02686",brand:"تويوتا",price:45,qty:14,cat:"تعليق وهيكل"},
+{id:18,name:"مساحات زجاج (زوج)",oem:"WIP-22",brand:"عام",price:30,qty:20,cat:"أخرى"},
+{id:19,name:"لمبة أمامية H7",oem:"H7-55W",brand:"عام",price:15,qty:40,cat:"أخرى"},
+{id:20,name:"شمع تنظيف سيارة",oem:"WAX-500",brand:"عام",price:18,qty:25,cat:"أخرى"}
+];
+let saved=null;
+try{saved=JSON.parse(localStorage.getItem('rahal_v2')||'null');}catch(e){saved=null;}
+let products=(saved&&Array.isArray(saved)&&saved.length>0)?saved:raw;
+let cats=["الكل","زيوت وسوائل","فلاتر","فرامل","كهرباء وبطاريات","تعليق وهيكل","أخرى"];
+let active="الكل";
+let cart=[];try{cart=JSON.parse(localStorage.getItem('c')||'[]');}catch(e){cart=[];}
+let role=localStorage.getItem('r')||'';
+
+function save(){localStorage.setItem('rahal_v2',JSON.stringify(products));localStorage.setItem('c',JSON.stringify(cart));}
+function resetData(){if(confirm('تصفير المخزن وإرجاع 20 صنف؟')){localStorage.removeItem('rahal_v2');products=[...raw];save();render();location.reload();}}
+function renderCats(){let h='';cats.forEach(c=>h+=`<div class="cat ${c===active?'active':''}" onclick="setCat('${c}',this)">${c}</div>`);document.getElementById('cats').innerHTML=h;}
+function setCat(c,el){active=c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));el.classList.add('active');render();}
+function render(){
+ let q=(document.getElementById('q').value||'').toLowerCase();
+ let list=products.filter(p=>{let okC=active==="الكل"||p.cat===active;let okQ=!q||p.name.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q)||p.oem.toLowerCase().includes(q);return okC&&okQ;});
+ let h='';
+ list.forEach(p=>{h+=`<div class="row"><div class="right"><div class="name">${p.name}</div><div class="code">${p.oem} - ${p.brand}</div><div class="price">${p.price} د.ل</div></div><div class="middle"><button onclick="chg(${p.id},-1)">-</button><div class="qty">${p.qty}</div><button onclick="chg(${p.id},1)">+</button></div><div class="left"><button class="btn-edit" onclick="editP(${p.id})">تعديل السعر</button><button class="btn-del" onclick="del(${p.id})">حذف</button></div></div>`;});
+ if(h==='')h='<div style="text-align:center;padding:20px;color:#999">لا يوجد منتجات - اضغط تصفير 🔄</div>';
+ document.getElementById('list').innerHTML=h;
+ let totalVal=products.reduce((s,p)=>s+p.price*p.qty,0);
+ let low=products.filter(p=>p.qty<5).length;
+ document.getElementById('totalVal').textContent=totalVal.toLocaleString();
+ document.getElementById('totalItems').textContent=products.length;
+ document.getElementById('low').textContent=low;
+ document.getElementById('statsTop').textContent=`${low} ناقص، ${totalVal.toLocaleString()} قيمة، ${products.length} أصناف`;
+ document.getElementById('cnt').textContent=cart.reduce((s,i)=>s+i.qty,0);
+ document.getElementById('cartTotal').textContent=cart.reduce((s,i)=>s+i.price*i.qty,0);
+ let rEl=document.getElementById('role');rEl.style.display=(role==='m')?'inline-block':'none';
+}
+function chg(id,d){let p=products.find(x=>x.id===id);if(!p)return;p.qty=Math.max(0,p.qty+d);save();render();}
+function editP(id){let p=products.find(x=>x.id===id);let n=prompt(`تعديل سعر ${p.name}
+الحالي: ${p.price}`,p.price);if(n===null)return;n=parseFloat(n);if(!isNaN(n)&&n>=0){p.price=n;save();render();}}
+function del(id){if(!confirm('حذف الصنف؟'))return;products=products.filter(x=>x.id!==id);save();render();}
+function addNew(){let name=prompt('اسم الصنف:');if(!name)return;let price=parseFloat(prompt('السعر:','50')||'0');let qty=parseInt(prompt('الكمية:','10')||'0');let brand=prompt('الماركة:','عام')||'عام';let cat=prompt('الفئة:','أخرى')||'أخرى';products.push({id:Date.now(),name,oem:'NEW-'+Date.now().toString().slice(-4),brand,price,qty,cat});save();render();}
+function openCart(){let h='';let t=0;cart.forEach(i=>{h+=`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee"><span>${i.name} x${i.qty}</span><b>${i.price*i.qty}</b></div>`;t+=i.price*i.qty;});document.getElementById('cartItems').innerHTML=h||'فاضية';document.getElementById('tot').textContent='الإجمالي: '+t+' د.ل';document.getElementById('cartM').classList.add('show');}
+function closeM(id){document.getElementById(id).classList.remove('show');}
+function wa(){if(cart.length===0)return alert('فاضية');let msg='سلام متجر رحال%0A';cart.forEach(i=>msg+=`- ${i.name} x${i.qty}=${i.price*i.qty}%0A`);let tot=cart.reduce((s,i)=>s+i.price*i.qty,0);msg+=`الإجمالي: ${tot} د.ل`;location.href='https://wa.me/218946514337?text='+msg;}
+function openLogin(){document.getElementById('loginM').classList.add('show');document.getElementById('passInput').value='';document.getElementById('passInput').focus();document.getElementById('loginMsg').textContent='';}
+function checkPass(){
+ let p=document.getElementById('passInput').value||'';let clean=p.replace(/[^0-9]/g,'');
+ if(clean==='0946514337'||clean==='946514337'||p==='admin123'){
+  role='m';localStorage.setItem('r','m');closeM('loginM');render();alert('✅ تم دخول المدير بنجاح - 👑 مدير رحال');
+ } else {
+  document.getElementById('loginMsg').textContent='❌ كلمة سر غلط - الصحيحة: 0946514337';
+ }
+}
+function logout(){role='';localStorage.removeItem('r');render();alert('تم الخروج');}
+renderCats();render();
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
