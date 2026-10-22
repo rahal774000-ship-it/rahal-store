@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>متجر رحال لقطع الغيار</title>
+<style>
+:root{--bg:#1f2933;--dk:#161d24;--cd:#2a3641;--g:#7ac143;--t:#fff;--m:#9fb0bd;--r:#e5534b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--t);padding-bottom:70px}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--dk);position:sticky;top:0;z-index:5;border-bottom:3px solid var(--g)}
+header b{font-size:19px;color:var(--g);flex:1}
+header small{color:var(--m);font-size:12px}
+main{padding:14px;max-width:720px;margin:auto}
+h2{margin:6px 0 12px;font-size:18px}
+.big{display:block;width:100%;text-align:right;background:var(--cd);border:2px solid #3b4a58;border-radius:14px;padding:22px 18px;margin-bottom:14px;color:var(--t);font:inherit;cursor:pointer}
+.big:active{border-color:var(--g)}
+.big span{font-size:40px;display:block;margin-bottom:6px}
+.big b{font-size:20px}.big em{display:block;color:var(--m);font-style:normal;font-size:13px;margin-top:4px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #3b4a58;background:var(--dk);color:var(--t);font:inherit;margin-bottom:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+.chip{flex:none;padding:7px 14px;border-radius:20px;background:var(--cd);color:var(--t);border:1px solid #3b4a58;font:inherit;font-size:13px}
+.chip.on{background:var(--g);color:#14210a;border-color:var(--g);font-weight:bold}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p{background:var(--cd);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.img{height:90px;display:flex;align-items:center;justify-content:center;font-size:42px;background:#34424f}
+.pb{padding:10px;display:flex;flex-direction:column;gap:4px;flex:1}
+.pb b{font-size:14px}.pb small{color:var(--m);font-size:12px}
+.pr{color:var(--g);font-weight:bold}
+.btn{border:0;border-radius:10px;padding:10px;font:inherit;font-weight:bold;background:var(--g);color:#14210a;cursor:pointer;width:100%;margin-top:auto}
+.btn.alt{background:transparent;color:var(--g);border:1px solid var(--g)}
+.btn:disabled{opacity:.35}
+.back{background:none;border:0;color:var(--g);font:inherit;padding:0;margin-bottom:8px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--dk);border-top:1px solid #3b4a58}
+nav button{flex:1;padding:14px;background:none;border:0;color:var(--m);font:inherit}
+nav button.on{color:var(--g);font-weight:bold}
+.mod{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;z-index:10}
+.sheet{background:var(--bg);width:100%;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px;max-width:720px;margin:auto}
+.o{background:var(--cd);border-radius:12px;padding:12px;margin-bottom:10px;font-size:14px;line-height:1.7}
+.o .st{float:left;font-size:12px;padding:2px 10px;border-radius:12px;background:#3b4a58}
+.o .st.ok{background:#2f5d1b}.o .st.sent{background:#1d4e89}
+.row{display:flex;gap:8px}.row .btn{margin-top:8px}
+a{color:var(--g)}
+.empty{color:var(--m);text-align:center;padding:30px 0}
+.img{background:radial-gradient(circle at 30% 20%,#4d6072,#222c35);cursor:pointer;height:100px}
+.img svg{filter:drop-shadow(0 6px 5px #0009);transition:transform .2s}
+.p:active .img svg{transform:scale(1.12) rotate(-4deg)}
+.zoom{perspective:600px;height:220px;border-radius:14px;margin-bottom:12px;background:radial-gradient(circle at 30% 20%,#4d6072,#222c35);display:flex;align-items:center;justify-content:center;touch-action:none}
+.zi{width:170px;height:170px;transition:transform .12s;filter:drop-shadow(0 12px 10px #000a)}
+.zi svg,.zi img{width:100%;height:100%;object-fit:cover}
+.hint{color:var(--m);font-size:12px;text-align:center;margin:-4px 0 10px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6ebef"/><stop offset=".5" stop-color="#8d9aa6"/><stop offset="1" stop-color="#4b5964"/></linearGradient></defs></svg>
+<header><b>متجر رحال ⚙</b><small>مصراتة</small></header>
+<main id="app"></main>
+<nav><button id="n1" onclick="go('home')">الرئيسية</button><button id="n2" onclick="go('orders')">الطلبات</button></nav>
+<div id="modal"></div>
+<script>
+var WA="218946514337"; // رقم واتساب المتجر لطلبات عروض الأسعار
+var P=[
+{id:1,s:"car",br:"تويوتا",md:"هيلوكس",n:"فلتر زيت",p:45,m:"تاجر 1",k:"filter"},
+{id:2,s:"car",br:"تويوتا",md:"هيلوكس",n:"فحمات فرامل أمامية",p:180,m:"تاجر 1",k:"pad"},
+{id:3,s:"car",br:"تويوتا",md:"كورولا",n:"فلتر هواء",p:60,m:"تاجر 2",k:"air"},
+{id:4,s:"car",br:"هيونداي",md:"إلنترا",n:"بطارية 70 أمبير",p:650,m:"تاجر 2",k:"battery"},
+{id:5,s:"car",br:"هيونداي",md:"أكسنت",n:"طلمبة بنزين",p:330,m:"تاجر 1",k:"pump"},
+{id:6,s:"car",br:"كيا",md:"سيراتو",n:"مساعد أمامي",p:420,m:"تاجر 3",k:"shock"},
+{id:10,s:"car",br:"نيسان",md:"صني",n:"فلتر زيت",p:40,m:"تاجر 2",k:"filter"},
+{id:11,s:"car",br:"نيسان",md:"صني",n:"فحمات فرامل أمامية",p:160,m:"تاجر 2",k:"pad"},
+{id:12,s:"car",br:"نيسان",md:"صني",n:"مساعد أمامي",p:380,m:"تاجر 3",k:"shock"},
+{id:13,s:"car",br:"نيسان",md:"قشقاي",n:"فلتر هواء",p:70,m:"تاجر 2",k:"air"},
+{id:14,s:"car",br:"نيسان",md:"نافارا",n:"طقم كلتش",p:1250,m:"تاجر 3",k:"clutch"},
+{id:15,s:"car",br:"نيسان",md:"باترول",n:"قرص فرامل",p:520,m:"تاجر 3",k:"disc"},
+{id:7,s:"hv",br:"مرسيدس",md:"أكتروس",n:"ترس ناقل الحركة",p:18500,m:"تاجر 4",k:"gear"},
+{id:8,s:"hv",br:"فولفو",md:"FH",n:"طقم كلتش",p:9200,m:"تاجر 4",k:"clutch"},
+{id:9,s:"hv",br:"كاتربيلر",md:"320",n:"فلتر هيدروليك",p:1400,m:"تاجر 5",k:"filter"},
+{id:16,s:"hv",br:"إيفيكو",md:"ستراليس",n:"طقم كلتش",p:8800,m:"تاجر 4",k:"clutch"},
+{id:17,s:"hv",br:"إيفيكو",md:"ديلي",n:"فلتر وقود",p:150,m:"تاجر 5",k:"filter"},
+{id:18,s:"hv",br:"مان",md:"TGA",n:"فحمات فرامل ثقيلة",p:900,m:"تاجر 4",k:"pad"},
+{id:19,s:"hv",br:"مان",md:"TGA",n:"مضخة وقود",p:2300,m:"تاجر 5",k:"pump"},
+{id:20,s:"hv",br:"شاكمان",md:"F3000",n:"قرص كلتش",p:3100,m:"تاجر 4",k:"clutch"},
+{id:21,s:"hv",br:"شاكمان",md:"F3000",n:"فلتر هواء",p:420,m:"تاجر 5",k:"air"}]; // لإضافة صورة حقيقية أضف img:"رابط الصورة" للمنتج
+var S={sec:null,q:"",br:"",o:ld()};
+function ld(){try{return JSON.parse(localStorage.getItem("rahal_o")||"[]")}catch(e){return[]}}
+function sv(){try{localStorage.setItem("rahal_o",JSON.stringify(S.o))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function fm(n){return n.toLocaleString("en-US")+" د.ل"}
+function cm(p){return Math.round(p<500?Math.max(10,p*.1):p<=5000?p*.07:p*.04)}
+function nav(a){$("n1").className=a==1?"on":"";$("n2").className=a==2?"on":""}
+function go(v){S.sec=null;S.q="";S.br="";v=="orders"?orders():home()}
+function home(){nav(1);$("app").innerHTML='<h2>ماذا تحتاج؟</h2>'+
+'<button class="big" onclick="sec(\'car\')"><span>🚗</span><b>سيارات</b><em>ملاكي وصغيرة ومتوسطة</em></button>'+
+'<button class="big" onclick="sec(\'hv\')"><span>🚛</span><b>آليات وشاحنات</b><em>قطع ثقيلة بعروض أسعار</em></button>'}
+function sec(s){S.sec=s;S.q="";S.br="";nav(1);var hv=s=="hv";
+var bs=[];P.forEach(function(x){if(x.s==s&&bs.indexOf(x.br)<0)bs.push(x.br)});
+$("app").innerHTML='<button class="back" onclick="home()">← رجوع</button><h2>'+(hv?"آليات وشاحنات":"سيارات")+'</h2>'+
+'<input id="q" placeholder="ابحث باسم السيارة أو القطعة" oninput="S.q=this.value;list()">'+
+'<div class="chips"><button class="chip on" onclick="S.br=\'\';chips()">الكل</button>'+bs.map(function(b){return'<button class="chip" onclick="S.br=\''+b+'\';chips()">'+b+'</button>'}).join("")+'</div><div id="l" class="grid"></div>';
+list()}
+function chips(){var c=document.querySelectorAll(".chip");for(var i=0;i<c.length;i++){var t=c[i].textContent;c[i].className="chip"+((t=="الكل"&&!S.br)||t==S.br?" on":"")}list()}
+function list(){var q=S.q.trim(),r=P.filter(function(x){return x.s==S.sec&&(!S.br||x.br==S.br)&&(x.br+x.md+x.n).indexOf(q)>=0});
+$("l").innerHTML=r.length?r.map(function(x){var hv=x.s=="hv";return'<div class="p"><div class="img" onclick="det('+x.id+')">'+im(x,76)+'</div><div class="pb"><b onclick="det('+x.id+')">'+x.n+'</b><small>'+x.br+' '+x.md+'</small><small>'+x.m+' · مصراتة</small><span class="pr">'+fm(x.p)+'</span>'+
+(hv?'<button class="btn alt" onclick="quote('+x.id+')">اطلب عرض سعر</button>':'<button class="btn" onclick="ord('+x.id+')">اطلب</button>')+'</div></div>'}).join(""):'<div class="empty" style="grid-column:1/3">لا توجد نتائج. جرّب اسماً آخر.</div>'}
+function quote(i){var x=P.filter(function(a){return a.id==i})[0];
+window.open("https://wa.me/"+WA+"?text="+encodeURIComponent("أريد عرض سعر: "+x.n+" - "+x.br+" "+x.md),"_blank")}
+function ord(i){var x=P.filter(function(a){return a.id==i})[0];
+$("modal").innerHTML='<div class="mod"><div class="sheet"><h2>طلب: '+x.n+'</h2><p>'+x.br+' '+x.md+' · '+fm(x.p)+'</p>'+
+'<input id="f1" placeholder="الاسم"><input id="f2" type="tel" placeholder="رقم الهاتف"><select id="f3"><option>مصراتة</option></select>'+
+'<input id="f4" placeholder="رابط الموقع على الخريطة"><button class="btn alt" onclick="loc()">📍 استخدم موقعي الحالي</button>'+
+'<div id="er" style="color:var(--r);margin:8px 0"></div><div class="row"><button class="btn" onclick="sub('+i+')">أرسل الطلب</button><button class="btn alt" onclick="$(\'modal\').innerHTML=\'\'">إلغاء</button></div></div></div>'}
+function loc(){if(!navigator.geolocation){$("er").textContent="الجهاز لا يدعم تحديد الموقع، الصق الرابط يدوياً.";return}
+navigator.geolocation.getCurrentPosition(function(p){$("f4").value="https://maps.google.com/?q="+p.coords.latitude+","+p.coords.longitude},function(){$("er").textContent="تعذّر تحديد الموقع. فعّل الموقع أو الصق الرابط."})}
+function sub(i){var a=$("f1").value.trim(),b=$("f2").value.trim(),c=$("f4").value.trim();
+if(!a||!b||!c){$("er").textContent="اكتب الاسم والهاتف والموقع.";return}
+S.o.unshift({id:Date.now(),pid:i,nm:a,ph:b,ct:$("f3").value,lc:c,st:"new"});sv();$("modal").innerHTML="";orders()}
+function orders(){nav(2);var h='<h2>الطلبات</h2>';
+if(!S.o.length){$("app").innerHTML=h+'<div class="empty">لا توجد طلبات بعد. اطلب قطعة من الرئيسية.</div>';return}
+$("app").innerHTML=h+S.o.map(function(o){var x=P.filter(function(a){return a.id==o.pid})[0],t={new:"جديد",ok:"تم الاتفاق",sent:"أُرسل للتوصيل"}[o.st];
+var l=/^https?:\/\//.test(o.lc)?'<a href="'+esc(o.lc)+'" target="_blank">فتح الموقع</a>':esc(o.lc);
+return'<div class="o"><span class="st '+o.st+'">'+t+'</span><b>'+x.n+'</b> · '+x.br+' '+x.md+'<br>التاجر: '+x.m+' · '+o.ct+'<br>المشتري: '+esc(o.nm)+' · '+esc(o.ph)+'<br>الموقع: '+l+'<br>السعر: '+fm(x.p)+' · عمولتنا: '+fm(cm(x.p))+
+'<div class="row"><button class="btn alt" '+(o.st!="new"?"disabled":"")+' onclick="st('+o.id+',\'ok\')">تأكيد الاتفاق مع التاجر</button><button class="btn" '+(o.st!="ok"?"disabled":"")+' onclick="dl('+o.id+')">إرسال لشركة التوصيل</button></div></div>'}).join("")}
+function st(id,v){S.o.forEach(function(o){if(o.id==id)o.st=v});sv();orders()}
+function dl(id){var n="";try{n=localStorage.getItem("rahal_dl")||""}catch(e){}
+if(!n){n=prompt("رقم واتساب شركة التوصيل (مع رمز الدولة، مثال 218912345678)");if(!n)return;try{localStorage.setItem("rahal_dl",n.replace(/\D/g,""))}catch(e){}}
+var o=S.o.filter(function(a){return a.id==id})[0],x=P.filter(function(a){return a.id==o.pid})[0];
+var m="طلب توصيل\nالقطعة: "+x.n+" ("+x.br+" "+x.md+")\nالتاجر: "+x.m+"\nالمدينة: "+o.ct+"\nالمستلم: "+o.nm+"\nالهاتف: "+o.ph+"\nالموقع: "+o.lc+"\nالمبلغ عند الاستلام: "+fm(x.p);
+window.open("https://wa.me/"+n.replace(/\D/g,"")+"?text="+encodeURIComponent(m),"_blank");st(id,"sent")}
+var IC={
+filter:'<rect x="30" y="24" width="40" height="56" rx="7" fill="url(#mg)"/><rect x="34" y="16" width="32" height="12" rx="3" fill="#5b6975"/><rect x="30" y="44" width="40" height="18" fill="#7ac143"/><rect x="26" y="78" width="48" height="6" rx="3" fill="#3b4752"/>',
+pad:'<path d="M12 62Q50 22 88 62L82 80Q50 48 18 80Z" fill="url(#mg)"/><path d="M18 80Q50 48 82 80L80 88Q50 58 20 88Z" fill="#2b2f33"/>',
+disc:'<circle cx="50" cy="50" r="40" fill="url(#mg)"/><circle cx="50" cy="50" r="14" fill="#2b3640"/><g fill="#2b3640"><circle cx="50" cy="26" r="4"/><circle cx="50" cy="74" r="4"/><circle cx="26" cy="50" r="4"/><circle cx="74" cy="50" r="4"/></g><circle cx="50" cy="50" r="40" fill="none" stroke="#7ac143" stroke-width="2"/>',
+battery:'<rect x="12" y="34" width="76" height="46" rx="5" fill="#2e3a45"/><rect x="12" y="34" width="76" height="12" rx="5" fill="#7ac143"/><rect x="22" y="26" width="12" height="9" fill="#9aa7b2"/><rect x="66" y="26" width="12" height="9" fill="#9aa7b2"/><path d="M28 62h16M36 54v16M58 62h16" stroke="#fff" stroke-width="4"/>',
+shock:'<rect x="46" y="8" width="8" height="34" rx="3" fill="url(#mg)"/><rect x="36" y="40" width="28" height="46" rx="5" fill="#2e3a45"/><path d="M30 44l40 6-40 6 40 6-40 6 40 6-40 6" fill="none" stroke="#7ac143" stroke-width="4"/>',
+air:'<rect x="14" y="30" width="72" height="42" rx="4" fill="#d9c9a3"/><path d="M24 30v42M34 30v42M44 30v42M54 30v42M64 30v42M74 30v42" stroke="#a8946a" stroke-width="3"/><rect x="14" y="30" width="72" height="42" rx="4" fill="none" stroke="#2e3a45" stroke-width="5"/>',
+pump:'<rect x="30" y="28" width="40" height="52" rx="8" fill="url(#mg)"/><rect x="42" y="14" width="16" height="16" rx="3" fill="#7ac143"/><rect x="70" y="40" width="16" height="8" fill="#5b6975"/><circle cx="50" cy="56" r="10" fill="#2b3640"/>',
+clutch:'<circle cx="50" cy="50" r="40" fill="url(#mg)"/><circle cx="50" cy="50" r="28" fill="#3a2f28"/><circle cx="50" cy="50" r="12" fill="url(#mg)"/><circle cx="50" cy="50" r="4" fill="#2b3640"/>',
+gear:'<g fill="url(#mg)"><rect x="43" y="10" width="14" height="80" rx="3"/><rect x="43" y="10" width="14" height="80" rx="3" transform="rotate(45 50 50)"/><rect x="43" y="10" width="14" height="80" rx="3" transform="rotate(90 50 50)"/><rect x="43" y="10" width="14" height="80" rx="3" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="30"/></g><circle cx="50" cy="50" r="12" fill="#2b3640"/>'};
+function im(x,z){return x.img?'<img src="'+esc(x.img)+'" alt="'+esc(x.n)+'" style="width:100%;height:100%;object-fit:cover">':'<svg viewBox="0 0 100 100" width="'+z+'" height="'+z+'">'+IC[x.k]+'</svg>'}
+function tilt(e){var r=e.currentTarget.getBoundingClientRect(),t=e.touches?e.touches[0]:e,a=(t.clientX-r.left)/r.width-.5,b=(t.clientY-r.top)/r.height-.5;e.currentTarget.firstElementChild.style.transform="rotateY("+a*40+"deg) rotateX("+(-b*40)+"deg) scale(1.08)"}
+function untilt(e){e.currentTarget.firstElementChild.style.transform=""}
+function det(i){var x=P.filter(function(a){return a.id==i})[0],hv=x.s=="hv";
+$("modal").innerHTML='<div class="mod" onclick="if(event.target==this)$(\'modal\').innerHTML=\'\'"><div class="sheet"><div class="zoom" onmousemove="tilt(event)" ontouchmove="tilt(event)" onmouseleave="untilt(event)" ontouchend="untilt(event)"><div class="zi">'+im(x,170)+'</div></div><div class="hint">حرّك إصبعك على الصورة لتدويرها</div>'+
+'<h2>'+x.n+'</h2><p>تناسب: '+x.br+' '+x.md+'<br>التاجر: '+x.m+' · مصراتة</p><p class="pr" style="font-size:20px">'+fm(x.p)+'</p><div class="row">'+
+(hv?'<button class="btn" onclick="quote('+x.id+')">اطلب عرض سعر</button>':'<button class="btn" onclick="ord('+x.id+')">اطلب الآن</button>')+'<button class="btn alt" onclick="$(\'modal\').innerHTML=\'\'">إغلاق</button></div></div></div>'}
+home();
+</script>
+</body>
+</html>
